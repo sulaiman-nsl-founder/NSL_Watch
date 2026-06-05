@@ -1,0 +1,38 @@
+/ {
+	chosen {
+		zephyr,display = &ssd16xx_1in54_epaper_gdeh0154d67;
+	};
+
+	mipi_dbi_1in54_epaper_gdeh0154d67 {
+		compatible = "zephyr,mipi-dbi-spi";
+		spi-dev = <&xiao_spi>;
+		dc-gpios = <&gpio1 6 GPIO_ACTIVE_HIGH>;      /* P1.06 */
+		reset-gpios = <&gpio1 7 GPIO_ACTIVE_LOW>;     /* P1.07 */
+		#address-cells = <1>;
+		#size-cells = <0>;
+
+		ssd16xx_1in54_epaper_gdeh0154d67: ssd16xxfb@0 {
+			compatible = "gooddisplay,gdeh0154a07", "solomon,ssd1681";
+			mipi-max-frequency = <4000000>;
+			reg = <0>;
+			width = <200>;
+			height = <200>;
+			busy-gpios = <&gpio1 4 GPIO_ACTIVE_HIGH>; /* P1.04 */
+
+			tssv = <0x80>;
+
+			full {
+				border-waveform = <0x05>;
+			};
+
+			partial {
+				border-waveform = <0x3c>;
+			};
+		};
+	};
+};
+
+&xiao_spi {
+    status = "okay";
+	cs-gpios = <&gpio1 5 GPIO_ACTIVE_LOW>; /* P1.05 */
+};

@@ -1,0 +1,95 @@
+/*
+ * SPI configuration for XIAO nRF54L15 with a 1.54" 200x200 SSD1681 EPD.
+ *
+ * NOTE: This uses spi20 on P2.01/P2.02. spi20 conflicts with uart20, so
+ * uart20 is disabled and the console is redirected to uart21.
+ */
+
+/ {
+	chosen {
+		zephyr,display = &ssd16xx_1in54_epaper_gdeh0154d67;
+		zephyr,console = &uart21;
+		nordic,rpc-uart = &uart21;
+		zephyr,shell-uart = &uart21;
+	};
+
+	mipi_dbi_1in54_epaper_gdeh0154d67 {
+		compatible = "zephyr,mipi-dbi-spi";
+		spi-dev = <&spi20>;
+		dc-gpios = <&gpio1 6 GPIO_ACTIVE_HIGH>;      /* P1.06 */
+		reset-gpios = <&gpio1 7 GPIO_ACTIVE_LOW>;     /* P1.07 */
+		#address-cells = <1>;
+		#size-cells = <0>;
+
+		ssd16xx_1in54_epaper_gdeh0154d67: ssd16xxfb@0 {
+			compatible = "gooddisplay,gdeh0154a07", "solomon,ssd1681";
+			mipi-max-frequency = <4000000>;
+			reg = <0>;
+			width = <200>;
+			height = <200>;
+			busy-gpios = <&gpio1 4 GPIO_ACTIVE_HIGH>; /* P1.04 */
+
+			tssv = <0x80>;
+
+			full {
+				border-waveform = <0x05>;
+			};
+
+			partial {
+				border-waveform = <0x3c>;
+			};
+		};
+	};
+};
+
+
+&spi20 {
+	compatible = "nordic,nrf-spim";
+	pinctrl-names = "default", "sleep";
+	pinctrl-0 = <&spi20_default>;
+	pinctrl-1 = <&spi20_sleep>;
+	status = "okay";
+	cs-gpios = <&gpio1 5 GPIO_ACTIVE_LOW>; /* P1.05 */
+};
+
+&uart20 {
+	status = "disabled";
+};
+
+&pinctrl {
+	spi20_default: spi20_default {
+		group1 {
+			psels = <NRF_PSEL(SPIM_SCK, 2, 1)>,
+			        <NRF_PSEL(SPIM_MOSI, 2, 2)>,
+			        <NRF_PSEL(SPIM_MISO, 2, 4)>;
+		};
+	};
+
+	spi20_sleep: spi20_sleep {
+		group1 {
+			psels = <NRF_PSEL(SPIM_SCK, 2, 1)>,
+			        <NRF_PSEL(SPIM_MOSI, 2, 2)>,
+			        <NRF_PSEL(SPIM_MISO, 2, 4)>;
+			low-power-enable;
+		};
+	};
+};
+
+&uart21_default {
+	group1 {
+		psels = <NRF_PSEL(UART_TX, 1, 9)>;
+	};
+
+	group2 {
+		psels = <NRF_PSEL(UART_RX, 1, 8)>;
+		bias-pull-up;
+	};
+};
+
+&uart21_sleep {
+	group1 {
+		psels = <NRF_PSEL(UART_TX, 1, 9)>,
+				<NRF_PSEL(UART_RX, 1, 8)>;
+		low-power-enable;
+	};
+};
