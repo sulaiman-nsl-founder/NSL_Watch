@@ -1,73 +1,150 @@
 #include <zephyr/kernel.h>
 #include <zephyr/device.h>
 #include <zephyr/drivers/display.h>
+
 #include <lvgl.h>
+
+
 
 #define LOG_LEVEL CONFIG_LOG_DEFAULT_LEVEL
 #include <zephyr/logging/log.h>
-LOG_MODULE_REGISTER(epaper);
+LOG_MODULE_REGISTER(watchface);
+
+static lv_obj_t *time_label;
+static lv_obj_t *date_label;
+
+static int hour = 12;
+static int minute = 0;
+static int second = 0;
+
+static const char *days[] = {
+    "SUN","MON","TUE","WED","THU","FRI","SAT"
+};
+
+static const char *months[] = {
+    "JAN","FEB","MAR","APR","MAY","JUN",
+    "JUL","AUG","SEP","OCT","NOV","DEC"
+};
+
+static int day_of_week = 5;
+static int day = 5;
+static int month = 6;
+static int year = 2026;
+
+static void update_watchface(void)
+{
+    char time_buf[16];
+    char date_buf[32];
+
+    snprintf(time_buf,
+             sizeof(time_buf),
+             "%02d:%02d",
+             hour,
+             minute);
+
+    snprintf(date_buf,
+             sizeof(date_buf),
+             "%s %02d %s %04d",
+             days[day_of_week],
+             day,
+             months[month - 1],
+             year);
+
+    lv_label_set_text(time_label, time_buf);
+    lv_label_set_text(date_label, date_buf);
+}
+
+static void minute_timer_cb(lv_timer_t *timer)
+{
+    ARG_UNUSED(timer);
+
+    minute++;
+
+    if (minute >= 60) {
+        minute = 0;
+        hour++;
+
+        if (hour >= 24) {
+            hour = 0;
+        }
+    }
+
+    update_watchface();
+
+    LOG_INF("Updated %02d:%02d", hour, minute);
+}
 
 int main(void)
 {
-    // Get display device
-    const struct device *display_dev = DEVICE_DT_GET(DT_CHOSEN(zephyr_display));
+    const struct device *display_dev =
+        DEVICE_DT_GET(DT_CHOSEN(zephyr_display));
+
     if (!device_is_ready(display_dev)) {
-        LOG_ERR("Display device not ready!");
+        LOG_ERR("Display not ready");
         return 0;
     }
-    LOG_INF("Display device ready.");
 
-    // Get the current active screen and set its background to white
-    // This is also an LVGL-level "clear" operation to ensure the canvas is white
     lv_obj_t *scr = lv_scr_act();
-    if (scr == NULL) {
-        LOG_ERR("LVGL screen is not ready!");
-        return 0;
-    }
 
-    lv_obj_set_style_bg_color(scr, lv_color_white(), LV_STATE_DEFAULT);
-    lv_obj_set_style_bg_opa(scr, LV_OPA_COVER, LV_STATE_DEFAULT);
+    lv_obj_set_style_bg_color(
+        scr,
+        lv_color_white(),
+        LV_PART_MAIN);
 
-    // Remove screen padding and scrollbar
-    lv_obj_set_style_pad_all(scr, 0, LV_STATE_DEFAULT);
-    lv_obj_set_scrollbar_mode(scr, LV_SCROLLBAR_MODE_OFF);
+    lv_obj_set_style_bg_opa(
+        scr,
+        LV_OPA_COVER,
+        LV_PART_MAIN);
 
+    time_label = lv_label_create(scr);
 
-    // Get display width and height (for layout)
-    lv_disp_t *disp = lv_disp_get_default();
-    if (disp == NULL) {
-        LOG_ERR("LVGL display is not ready!");
-        return 0;
-    }
+    lv_obj_set_style_text_color(
+        time_label,
+        lv_color_black(),
+        0);
 
-    lv_coord_t width = lv_disp_get_hor_res(disp);
-    lv_coord_t height = lv_disp_get_ver_res(disp);
-    LOG_INF("Display width: %d, height: %d", width, height);
+    lv_obj_set_style_text_font(
+        time_label,
+        &lv_font_montserrat_16,
+        0);
 
+    lv_obj_align(
+        time_label,
+        LV_ALIGN_CENTER,
+        0,
+        -20);
 
-    lv_obj_t *border = lv_obj_create(scr);
-    lv_obj_set_size(border, width - 20, height - 20);
-    lv_obj_align(border, LV_ALIGN_CENTER, 0, 0);
-    lv_obj_set_style_bg_opa(border, LV_OPA_TRANSP, LV_STATE_DEFAULT);
-    lv_obj_set_style_border_color(border, lv_color_black(), LV_STATE_DEFAULT);
-    lv_obj_set_style_border_width(border, 2, LV_STATE_DEFAULT);
-    lv_obj_set_style_radius(border, 0, LV_STATE_DEFAULT);
+    date_label = lv_label_create(scr);
 
-    lv_obj_t *label = lv_label_create(scr);
-    lv_label_set_text(label, "HELLO EPAPER");
-    lv_obj_set_style_text_color(label, lv_color_black(), LV_STATE_DEFAULT);
-    lv_obj_set_style_text_font(label, &lv_font_montserrat_16, LV_STATE_DEFAULT);
-    lv_obj_align(label, LV_ALIGN_CENTER, 0, 0);
+    lv_obj_set_style_text_color(
+        date_label,
+        lv_color_black(),
+        0);
 
-    lv_timer_handler();
-    if (display_blanking_off(display_dev)) {
-        LOG_ERR("Failed to turn off display blanking!");
-        return 0;
-    }
+    lv_obj_set_style_text_font(
+        date_label,
+        &lv_font_montserrat_12,
+        0);
+
+    lv_obj_align(
+        date_label,
+        LV_ALIGN_BOTTOM_MID,
+        0,
+        -10);
+
+    update_watchface();
+
+    lv_timer_create(
+        minute_timer_cb,
+        60000,
+        NULL);
+
+    display_blanking_off(display_dev);
 
     while (1) {
         lv_timer_handler();
-        k_sleep(K_MSEC(5000)); // Keep ePaper updates slow.
+        k_sleep(K_MSEC(100));
     }
+
     return 0;
 }
