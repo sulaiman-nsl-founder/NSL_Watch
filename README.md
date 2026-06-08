@@ -2,7 +2,7 @@
 
 Welcome to the **NSL Watch** project! This is a firmware example for creating a stylish flip-clock style watch face using Zephyr RTOS and LVGL on an ePaper display.
 
-![Project Image](docs/images/watch_preview.png)
+![Project Image](docs/images/watch_preview.jpg)
 *(Replace `docs/images/watch_preview.png` with a path to your actual project image)*
 
 ## Project Overview
@@ -17,8 +17,22 @@ This project demonstrates how to build a watch user interface using LVGL (Light 
 
 ## Hardware Requirements
 
-*   **Development Board:** [Seeed Studio XIAO nRF54L15](https://www.seeedstudio.com/)
+*   **Development Board:** [Seeed Studio XIAO nRF54L15](https://wiki.seeedstudio.com/xiao_nrf54l15_sense_getting_started/)
 *   **Display:** ePaper display compatible with the `SSD16XX` driver (SPI interface).
+
+### Pin Connections
+
+| E-Paper Pin | XIAO nRF54L15 Pin | nRF54L15 GPIO    |
+| ----------- | ----------------- | ---------------- |
+| VCC         | 3V3               | 3.3V             |
+| GND         | GND               | GND              |
+| SCL         | D8                | P2.01 (SPI_SCK)  |
+| SDA (DIN)   | D10               | P2.02 (SPI_MOSI) |
+| CS          | D1                | P1.05            |
+| D/C         | D2                | P1.06            |
+| RES         | D3                | P1.07            |
+| BUSY        | D0                | P1.04            |
+| MISO        | Not Connected     | —                |
 
 ## Software Stack & Versions
 
