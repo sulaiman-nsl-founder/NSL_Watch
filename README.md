@@ -62,14 +62,14 @@ pio run -e seeed-xiao-nrf54l15 --target upload
 # Clean build files
 pio run --target clean
 ```
-
+<!--
 ## Adding Images to README
 
 To add your own images to this README:
 1. Create a folder named `images` in your project root (or inside a `docs` folder).
 2. Place your `.png`, `.jpg`, or `.gif` image inside that folder.
 3. Update the Markdown image link at the top of this file to point to your new image:
-   `![My Image Description](path/to/my/image.png)`
+   `![My Image Description](path/to/my/image.png)`-->
 
 ## File Structure
 
