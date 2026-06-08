@@ -1,28 +1,64 @@
-How to build PlatformIO based project
-=====================================
+# NSL Watch - Zephyr & LVGL ePaper Watchface
 
-1. [Install PlatformIO Core](https://docs.platformio.org/page/core.html)
-2. Download [development platform with examples](https://github.com/Seeed-Studio/platform-seeedboards/archive/refs/heads/main.zip)
-3. Extract ZIP archive
-4. Run these commands:
+Welcome to the **NSL Watch** project! This is a firmware example for creating a stylish flip-clock style watch face using Zephyr RTOS and LVGL on an ePaper display.
+
+![Project Image](docs/images/watch_preview.png)
+*(Replace `docs/images/watch_preview.png` with a path to your actual project image)*
+
+## Project Overview
+
+This project demonstrates how to build a watch user interface using LVGL (Light and Versatile Graphics Library) integrated with the Zephyr Real-Time Operating System. It is designed to run on the Seeed Studio XIAO nRF54L15 board and uses an ePaper display for ultra-low power consumption.
+
+### Features
+*   **Time Display:** Shows Hour, Minute, and AM/PM indicators.
+*   **Date Display:** Shows Day of the week, Day, Month, and Year.
+*   **Fonts:** Uses compressed Montserrat fonts (16px and 48px) to save space.
+*   **Monochrome UI:** Optimized for ePaper (SSD16XX) 1-bit color depth.
+
+## Hardware Requirements
+
+*   **Development Board:** [Seeed Studio XIAO nRF54L15](https://www.seeedstudio.com/)
+*   **Display:** ePaper display compatible with the `SSD16XX` driver (SPI interface).
+
+## Software Stack & Versions
+
+*   **Framework:** [Zephyr RTOS](https://zephyrproject.org/) `v4.2.1`
+*   **GUI Library:** [LVGL](https://lvgl.io/) `v9.3.0`
+*   **Build System:** [PlatformIO](https://platformio.org/)
+
+## How to Build and Upload
+
+This project uses PlatformIO for dependency management and building. 
+
+### Prerequisites
+1. Install [PlatformIO Core](https://docs.platformio.org/page/core.html) or the PlatformIO IDE extension for VSCode.
+
+### Commands
+
+Open your terminal in the `NSL_Watch` project directory and run the following commands:
 
 ```shell
-# Change directory to example
-$ cd platform-seeedboards/examples/zephyr-epaper/2inch13
+# Build the project for the seeed-xiao-nrf54l15 environment
+pio run -e seeed-xiao-nrf54l15
 
-# Build project
-$ pio run
-
-# Upload firmware
-$ pio run --target upload
-
-# Build specific environment
-$ pio run -e seeed-xiao-nrf54l15
-
-# Upload firmware for the specific environment
-$ pio run -e seeed-xiao-nrf54l15 --target upload
+# Upload the firmware to your connected board
+pio run -e seeed-xiao-nrf54l15 --target upload
 
 # Clean build files
-$ pio run --target clean
+pio run --target clean
 ```
 
+## Adding Images to README
+
+To add your own images to this README:
+1. Create a folder named `images` in your project root (or inside a `docs` folder).
+2. Place your `.png`, `.jpg`, or `.gif` image inside that folder.
+3. Update the Markdown image link at the top of this file to point to your new image:
+   `![My Image Description](path/to/my/image.png)`
+
+## File Structure
+
+*   `src/main.c`: The main application logic and LVGL UI creation.
+*   `zephyr/prj.conf`: Zephyr and LVGL configuration options (e.g., enabling SPI, Display, adjusting memory pools).
+*   `zephyr/boards/seeed_xiao_nrf54l15.overlay`: Hardware specific device tree overlay for the display.
+*   `platformio.ini`: PlatformIO build environment configuration.
