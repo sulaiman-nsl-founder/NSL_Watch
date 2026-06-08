@@ -3,7 +3,8 @@
 Welcome to the **NSL Watch** project! This is a firmware example for creating a stylish flip-clock style watch face using Zephyr RTOS and LVGL on an ePaper display.
 
 ![Project Image](docs/images/watch_preview.jpg)
-*(Replace `docs/images/watch_preview.png` with a path to your actual project image)*
+![Circuit Image](docs/images/circuit_image.png)
+<!-- *(Replace `docs/images/watch_preview.png` with a path to your actual project image)* -->
 
 ## Project Overview
 
@@ -38,7 +39,7 @@ This project demonstrates how to build a watch user interface using LVGL (Light 
 
 *   **Framework:** [Zephyr RTOS](https://zephyrproject.org/) `v4.2.1`
 *   **GUI Library:** [LVGL](https://lvgl.io/) `v9.3.0`
-*   **Build System:** [PlatformIO](https://platformio.org/)
+*   **Build System:** [PlatformIO](https://platformio.org/) 
 
 ## How to Build and Upload
 
@@ -62,13 +63,13 @@ pio run -e seeed-xiao-nrf54l15 --target upload
 pio run --target clean
 ```
 
-## Adding Images to README
+<!-- ## Adding Images to README
 
 To add your own images to this README:
 1. Create a folder named `images` in your project root (or inside a `docs` folder).
 2. Place your `.png`, `.jpg`, or `.gif` image inside that folder.
 3. Update the Markdown image link at the top of this file to point to your new image:
-   `![My Image Description](path/to/my/image.png)`
+   `![My Image Description](path/to/my/image.png)` -->
 
 ## File Structure
 
@@ -76,3 +77,20 @@ To add your own images to this README:
 *   `zephyr/prj.conf`: Zephyr and LVGL configuration options (e.g., enabling SPI, Display, adjusting memory pools).
 *   `zephyr/boards/seeed_xiao_nrf54l15.overlay`: Hardware specific device tree overlay for the display.
 *   `platformio.ini`: PlatformIO build environment configuration.
+
+## Future Development
+
+*   Make a 3D model for the watch case
+*   Add BLE with a mobile app
+*   Add step count tracking
+*   Add a vibration motor for notifications/alarms
+*   Test and optimize power consumption for better battery life
+*   Add more watch faces
+*   Add a small e-book reader feature
+*   Add a menu navigation system
+*   Add small games
+*   Add voice control
+
+## 🤝 Contributing
+
+Pull requests are welcome! For major changes, please open an issue first to discuss what you’d like to change.
