@@ -3,7 +3,8 @@
 Welcome to the **NSL Watch** project! This is a firmware example for creating a stylish flip-clock style watch face using Zephyr RTOS and LVGL on an ePaper display.
 
 ![Project Image](docs/images/watch_preview.jpg)
-*(Replace `docs/images/watch_preview.png` with a path to your actual project image)*
+<!-- *(Replace `docs/images/watch_preview.png` with a path to your actual project image)* -->
+
 
 ## Project Overview
 
