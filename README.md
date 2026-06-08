@@ -5,7 +5,7 @@ Welcome to the **NSL Watch** project! This is a firmware example for creating a 
 ![Project Image](docs/images/watch_preview.jpg)
 ![circuit Image](docs/images/circuit_image.png)
 
-*(Replace `docs/images/watch_preview.png` with a path to your actual project image)*
+<!-- *(Replace `docs/images/watch_preview.png` with a path to your actual project image)* -->
 
 ## Project Overview
 
@@ -64,13 +64,13 @@ pio run -e seeed-xiao-nrf54l15 --target upload
 pio run --target clean
 ```
 
-## Adding Images to README
+<!-- ## Adding Images to README
 
 To add your own images to this README:
 1. Create a folder named `images` in your project root (or inside a `docs` folder).
 2. Place your `.png`, `.jpg`, or `.gif` image inside that folder.
 3. Update the Markdown image link at the top of this file to point to your new image:
-   `![My Image Description](path/to/my/image.png)`
+   `![My Image Description](path/to/my/image.png)` -->
 
 ## File Structure
 
